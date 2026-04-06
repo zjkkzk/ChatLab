@@ -1,5 +1,46 @@
 [
   {
+    "version": "0.14.2",
+    "date": "2026-04-07",
+    "summary": "This update improves the AI chat experience with copy support, cleaner UI, new FTS5 full-text search tools, leaner search parameters, and clearer error feedback with stronger test coverage.",
+    "changes": [
+      {
+        "type": "feat",
+        "items": [
+          "Add a 7-day memory for assistant selection.",
+          "Add one-click message copying in AI chat.",
+          "Improve AI chat styling and overall interaction flow.",
+          "Add FTS5 full-text search support with a quick search tool.",
+          "Trim search parameters in selected tools to reduce token usage.",
+          "Add an E2E testing framework for Electron apps with port management and instance isolation."
+        ]
+      },
+      {
+        "type": "fix",
+        "items": ["Improve AI chat error messages to make issues easier to diagnose."]
+      },
+      {
+        "type": "refactor",
+        "items": [
+          "Reorganize the AI chat module code structure.",
+          "Extract shared logic from the session analysis page and unify header copy."
+        ]
+      },
+      {
+        "type": "test",
+        "items": ["Add reusable smoke-test coverage for the E2E app launcher."]
+      },
+      {
+        "type": "docs",
+        "items": ["Update intro images in project documentation."]
+      },
+      {
+        "type": "style",
+        "items": ["Standardize parts of the code formatting to improve readability."]
+      }
+    ]
+  },
+  {
     "version": "0.14.1",
     "date": "2026-04-02",
     "summary": "This update refines the Home information architecture and UI, while improving SQL conversation UX, stats read performance, and AI tool quality.",
