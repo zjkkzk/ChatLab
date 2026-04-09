@@ -1,5 +1,26 @@
 [
   {
+    "version": "0.16.0",
+    "date": "2026-04-10",
+    "summary": "This update adds a new initiative analysis view for private chats and fixes missing custom models in the model-edit dialog.",
+    "changes": [
+      {
+        "type": "feat",
+        "items": [
+          "Add a new initiative analysis view for private chats.",
+          "Improve the footer presentation and interactions.",
+          "Refine the logic in the lower section of the quotes module."
+        ]
+      },
+      {
+        "type": "fix",
+        "items": [
+          "Fix an issue where multiple custom models could disappear in the third-party/local service edit dialog."
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.15.0",
     "date": "2026-04-08",
     "summary": "This release significantly improves search and query performance with context-aware search, streamlines AI model configuration with added providers, and adds Linux platform support.",
