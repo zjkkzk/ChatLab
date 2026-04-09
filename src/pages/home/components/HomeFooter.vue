@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getChatlabSiteLocalePath } from '@/utils/chatlabSiteLocale'
+import { getChatlabSiteLocalePath, getChatlabSiteLangQuery } from '@/utils/chatlabSiteLocale'
 
 const emit = defineEmits<{
   openChangelog: []
@@ -37,7 +37,7 @@ function getDefaultLinks(): FooterLink[] {
       id: 'website',
       icon: 'i-heroicons-globe-alt',
       title: t('home.footer.website'),
-      url: `https://chatlab.fun${getChatlabSiteLocalePath(locale.value) ? `/${getChatlabSiteLocalePath(locale.value)}` : ''}/`,
+      url: `https://chatlab.fun${getChatlabSiteLangQuery(locale.value)}`,
     },
     {
       id: 'github',
@@ -62,33 +62,21 @@ function getDefaultLinks(): FooterLink[] {
 
 const footerLinks = ref<FooterLink[]>(getDefaultLinks())
 
-// 社交链接配置
-interface SocialConfig {
-  xiaohongshu?: { show: boolean; url: string }
-  x?: { show: boolean; url: string }
+// 社交链接配置（由远程配置 socialData 直接提供）
+interface SocialData {
+  show: boolean
+  name: string
+  url: string
 }
 
-const socialConfig = ref<SocialConfig>({})
+const socialData = ref<SocialData | null>(null)
 
-// 根据语言获取社交链接
 const socialLink = computed(() => {
-  const isChinese = locale.value.startsWith('zh')
-
-  if (isChinese && socialConfig.value.xiaohongshu?.show) {
-    return {
-      title: '小红书',
-      url: socialConfig.value.xiaohongshu.url,
-    }
+  if (!socialData.value?.show || !socialData.value.url) return null
+  return {
+    title: socialData.value.name,
+    url: socialData.value.url,
   }
-
-  if (!isChinese && socialConfig.value.x?.show) {
-    return {
-      title: 'X',
-      url: socialConfig.value.x.url,
-    }
-  }
-
-  return null
 })
 
 /**
@@ -112,12 +100,12 @@ function loadCachedExtraLinks(): FooterLink[] | null {
 /**
  * 从 localStorage 加载缓存的社交配置
  */
-function loadCachedSocialConfig(): SocialConfig | null {
+function loadCachedSocialConfig(): SocialData | null {
   try {
     const cached = localStorage.getItem(storageKey.value)
     if (cached) {
       const config = JSON.parse(cached)
-      return config.social || null
+      return (config.socialData as SocialData) || null
     }
   } catch (error) {
     // 缓存损坏时降级为默认社交配置，保证页面功能可用。
@@ -130,8 +118,7 @@ function loadCachedSocialConfig(): SocialConfig | null {
  * 获取远程配置
  * 注意：此配置包含多个用途的数据，如：
  * - homeFooterExtraLinks: 首页 Footer 额外链接
- * - footerLinkConfig: Sidebar Footer 链接配置
- * - social: 社交链接配置（xiaohongshu, x）
+ * - socialData: 社交链接配置（show, name, url）
  * - aiTips: AI 模型配置提示
  */
 async function fetchConfig(): Promise<void> {
@@ -142,15 +129,14 @@ async function fetchConfig(): Promise<void> {
   }
 
   // 加载缓存的社交配置
-  const cachedSocial = loadCachedSocialConfig()
-  if (cachedSocial) {
-    socialConfig.value = cachedSocial
+  const cachedSocialData = loadCachedSocialConfig()
+  if (cachedSocialData) {
+    socialData.value = cachedSocialData
   }
 
   try {
     const result = await window.api.app.fetchRemoteConfig(configUrl.value)
     if (!result.success || !result.data) return
-
     const config = result.data as Record<string, unknown>
     // 保存整个配置对象（带语言后缀，用于 Footer）
     localStorage.setItem(storageKey.value, JSON.stringify(config))
@@ -163,8 +149,8 @@ async function fetchConfig(): Promise<void> {
     }
 
     // 更新社交配置
-    if (config.social) {
-      socialConfig.value = config.social as SocialConfig
+    if (config.socialData) {
+      socialData.value = config.socialData as SocialData
     }
   } catch (error) {
     // 远程配置拉取失败时保留当前（默认或缓存）状态，避免打断用户使用。
