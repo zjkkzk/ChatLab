@@ -1,5 +1,27 @@
 [
   {
+    "version": "0.17.1",
+    "date": "2026-04-13",
+    "summary": "Refactored the Topics module with a new topic card view, improved word cloud keyword filtering and query caching, added remote tokenizer dictionary downloads with Traditional Chinese support, and improved WhatsApp detection.",
+    "changes": [
+      {
+        "type": "feat",
+        "items": [
+          "Refactor the Topics module and add a topic card view.",
+          "Add keyword filtering to the word cloud.",
+          "Support remote tokenizer dictionary downloads with Traditional Chinese dictionary included.",
+          "Improve query cache logic for faster lookups.",
+          "Standardize loading indicators across components.",
+          "Improve WhatsApp chat detection reliability."
+        ]
+      },
+      {
+        "type": "ci",
+        "items": ["Launch the official documentation site with automated sync and deployment."]
+      }
+    ]
+  },
+  {
     "version": "0.17.0",
     "date": "2026-04-12",
     "summary": "This release strengthens WhatsApp import parsing and specified-format imports, while refreshing Overview cards and adding sharing, screenshots, and debugging utilities.",
