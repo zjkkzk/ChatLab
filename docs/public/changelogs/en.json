@@ -1,5 +1,16 @@
 [
   {
+    "version": "0.17.4",
+    "date": "2026-04-19",
+    "summary": "Implemented the full Import API v1 protocol and added hierarchical data source management, now supporting automatic chat history sync.",
+    "changes": [
+      {
+        "type": "feat",
+        "items": ["Implement the full Import API v1 protocol with hierarchical data source management."]
+      }
+    ]
+  },
+  {
     "version": "0.17.3",
     "date": "2026-04-17",
     "summary": "This release adds a language preference tab for private chats, introduces sorting and filtering in the sidebar conversation list, improves AI provider and model configuration, and fixes a time filter reset issue.",
