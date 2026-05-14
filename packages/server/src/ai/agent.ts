@@ -7,8 +7,15 @@
 
 import { Agent as PiAgentCore } from '@mariozechner/pi-agent-core'
 import type { AgentEvent as PiAgentEvent } from '@mariozechner/pi-agent-core'
-import { type Message as PiMessage, type Usage as PiUsage, streamSimple } from '@mariozechner/pi-ai'
-import type { AIConversationManager } from '@openchatlab/node-runtime'
+import {
+  type Message as PiMessage,
+  type Usage as PiUsage,
+  streamSimple,
+  completeSimple,
+  type TextContent as PiTextContent,
+} from '@mariozechner/pi-ai'
+import type { AIConversationManager, CompressionConfig, CompressionLlmAdapter } from '@openchatlab/node-runtime'
+import { checkAndCompress } from '@openchatlab/node-runtime'
 
 import { getDefaultAssistantConfig, buildPiModel } from './llm-config'
 
@@ -38,6 +45,7 @@ export interface RunAgentOptions {
   locale?: string
   assistantSystemPrompt?: string
   skillMenu?: string | null
+  compressionConfig?: CompressionConfig
   tools?: import('@mariozechner/pi-agent-core').AgentTool[]
   aiDataDir: string
   convManager: AIConversationManager
@@ -128,6 +136,7 @@ export async function runServerAgent(options: RunAgentOptions): Promise<void> {
     locale = 'zh-CN',
     assistantSystemPrompt,
     skillMenu,
+    compressionConfig,
     tools = [],
     aiDataDir,
     convManager,
@@ -146,6 +155,42 @@ export async function runServerAgent(options: RunAgentOptions): Promise<void> {
   const maxToolRounds = 5
 
   const systemPrompt = buildSystemPrompt(chatType, assistantSystemPrompt, locale, skillMenu)
+
+  if (compressionConfig?.enabled) {
+    onEvent({ type: 'status', status: { phase: 'compressing', round: 0, toolsUsed: 0 } })
+    const llmAdapter: CompressionLlmAdapter = {
+      contextWindow: piModel.contextWindow ?? 128000,
+      compress: async (prompt: string, maxTokens: number) => {
+        try {
+          const result = await completeSimple(
+            piModel,
+            {
+              systemPrompt: undefined,
+              messages: [{ role: 'user', content: [{ type: 'text', text: prompt }], timestamp: Date.now() }] as any,
+            },
+            { apiKey: llmConfig.apiKey, maxTokens }
+          )
+          const text = result.content
+            .filter((item): item is PiTextContent => item.type === 'text')
+            .map((item) => item.text)
+            .join('')
+          return text || null
+        } catch {
+          return null
+        }
+      },
+    }
+    const compressionResult = await checkAndCompress(
+      conversationId,
+      compressionConfig,
+      systemPrompt,
+      llmAdapter,
+      convManager
+    )
+    if (compressionResult.compressed) {
+      onEvent({ type: 'status', status: { phase: 'compression_done', round: 0, toolsUsed: 0 } })
+    }
+  }
   const totalUsage = { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
   const toolsUsed: string[] = []
   let toolRounds = 0

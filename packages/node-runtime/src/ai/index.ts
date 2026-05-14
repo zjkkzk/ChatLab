@@ -26,6 +26,10 @@ export type { SkillManagerLogger } from './skill-manager'
 export { createActivateSkillTool } from './activate-skill-tool'
 export type { ActivateSkillToolOptions, ActivateSkillTool, ActivateSkillToolResult } from './activate-skill-tool'
 
+// Compression
+export type { CompressionConfig, CompressionResult, CompressionLogger, CompressionLlmAdapter } from './compression'
+export { checkAndCompress, manualCompress } from './compression'
+
 // Preprocessor
 export type {
   PreprocessConfig,

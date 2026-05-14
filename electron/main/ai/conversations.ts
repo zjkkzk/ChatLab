@@ -13,7 +13,7 @@ export type { AIConversation, AIMessage, AIMessageRole, ContentBlock, TokenUsage
 
 let manager: AIConversationManager | null = null
 
-function getManager(): AIConversationManager {
+export function getManager(): AIConversationManager {
   if (!manager) {
     manager = new AIConversationManager(getAiDataDir(), {
       logger: {

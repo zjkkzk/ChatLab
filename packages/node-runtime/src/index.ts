@@ -36,6 +36,10 @@ export { parseAssistantFile, serializeAssistant, parseSkillFile, extractSkillId 
 export { AIConversationManager } from './ai'
 export { countTokens, countMessagesTokens } from './ai'
 
+// Compression
+export type { CompressionConfig, CompressionResult, CompressionLogger, CompressionLlmAdapter } from './ai'
+export { checkAndCompress, manualCompress } from './ai'
+
 // SkillManager
 export { SkillManager } from './ai'
 export type { SkillManagerLogger, ActivateSkillToolOptions, ActivateSkillTool, ActivateSkillToolResult } from './ai'
