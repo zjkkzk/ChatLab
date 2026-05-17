@@ -93,6 +93,10 @@ export {
 } from './summary'
 export type { SummaryDeps, SummaryMessage, SummaryOptions, SummaryResult } from './summary'
 
+// LLM Config Store
+export { LLMConfigStore, MAX_CONFIG_COUNT } from './llm-config-store'
+export type { AIServiceConfig, AIConfigStore, ConfigStorage, LLMConfigStoreDeps } from './llm-config-store'
+
 // LLM Model Builder
 export { buildPiModel, normalizeAnthropicBaseUrl, normalizeOpenAICompatibleBaseUrl } from './llm-builder'
 export type { PiModelConfig, BuildPiModelOptions } from './llm-builder'
