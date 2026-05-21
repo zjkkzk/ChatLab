@@ -14,7 +14,7 @@ export { CoreDataProvider } from './providers/core-data-provider'
 // === Tool Definitions ===
 export { memberStatsTool } from './definitions/member-stats'
 export { timeStatsTool } from './definitions/time-stats'
-export { searchTool } from './definitions/search'
+
 export { recentMessagesTool } from './definitions/recent-messages'
 export { sqlQueryTool, schemaTool } from './definitions/sql-query'
 export { chatOverviewTool } from './definitions/chat-overview'

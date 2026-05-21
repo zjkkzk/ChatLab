@@ -17,10 +17,7 @@ import { formatToolResultAsText } from './format'
 
 const MCP_TOOL_PREFIX = 'chatlab_'
 
-const FORMAT_PARAM = z
-  .enum(['text', 'json'])
-  .optional()
-  .describe('Output format: "text" for token-efficient plain text (default), "json" for structured JSON')
+const FORMAT_PARAM = z.enum(['text', 'json']).optional().describe('text (default) or json')
 
 /** Tools where JSON is a better default (raw SQL results, schema) */
 const JSON_DEFAULT_TOOLS = new Set(['execute_sql', 'get_schema'])
@@ -60,9 +57,8 @@ function registerTools(server: McpServer, dbManager: McpDatabaseManager): void {
       continue
     }
 
-    const sessionsToolMcpName = `${MCP_TOOL_PREFIX}list_sessions`
     const zodShape = {
-      session_id: z.string().describe(`Session ID (use ${sessionsToolMcpName} to get available sessions)`),
+      session_id: z.string().describe('Session ID'),
       ...jsonSchemaToZod(tool.inputSchema.properties, tool.inputSchema.required),
       format: FORMAT_PARAM,
     }
